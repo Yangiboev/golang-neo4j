@@ -54,7 +54,7 @@ func New(c *HandlerV1Config) *handlerV1 {
 func HandleBadRequest(c *gin.Context, err error, msg string) {
 	c.JSON(http.StatusBadRequest, gin.H{
 		"code":    http.StatusBadRequest,
-		"error":   ErrorBadRequest,
+		"error":   err,
 		"message": msg,
 	})
 }

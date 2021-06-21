@@ -7,6 +7,7 @@ import (
 	"github.com/Yangiboev/golang-neo4j/pkg/helper"
 	"github.com/Yangiboev/golang-neo4j/pkg/logger"
 	"github.com/Yangiboev/golang-neo4j/storage"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 )
 
 type responsibleService struct {
@@ -14,23 +15,21 @@ type responsibleService struct {
 	storage storage.StorageI
 }
 
-func NewResponsibleService(db *db.Database, log logger.Logger) *responsibleService {
+func NewResponsibleService(driver neo4j.Driver, log logger.Logger) *responsibleService {
 	return &responsibleService{
-		storage: storage.NewResponsibleStorage(db),
+		storage: storage.NewResponsibleStorage(driver),
 		logger:  log,
 	}
 }
 
 func (ps *responsibleService) Create(ctx context.Context, req *models.Responsible) (*models.CreateResponse, error) {
-	ID, err := ps.storage.Responsible().Create(req)
+	res, err := ps.storage.Responsible().Create(req)
 
 	if err != nil {
 		ps.logger.Error("error while creating responsible", logger.Error(err))
 		return nil, helper.HandleError(ps.logger, err, "error while creating responsible", req)
 	}
-	return &models.CreateResponse{
-		ID: ID,
-	}, nil
+	return res, nil
 }
 
 func (ps *responsibleService) Get(ctx context.Context, req *models.GetRequest) (*models.GetResponsibleResponse, error) {

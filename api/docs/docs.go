@@ -24,9 +24,9 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/product": {
+        "/v1/responsible": {
             "get": {
-                "description": "API for getting all Products",
+                "description": "API for getting all responsibles",
                 "consumes": [
                     "application/json"
                 ],
@@ -34,9 +34,9 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "product"
+                    "responsible"
                 ],
-                "summary": "Get All Products",
+                "summary": "Get All responsibles",
                 "parameters": [
                     {
                         "type": "string",
@@ -49,7 +49,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetAllProductsResponse"
+                            "$ref": "#/definitions/models.GetAllResponsiblesResponse"
                         }
                     },
                     "400": {
@@ -67,7 +67,7 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "API for creating product",
+                "description": "API for creating responsible",
                 "consumes": [
                     "application/json"
                 ],
@@ -75,17 +75,17 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "product"
+                    "responsible"
                 ],
-                "summary": "Create product",
+                "summary": "Create responsible",
                 "parameters": [
                     {
-                        "description": "product",
-                        "name": "Product",
+                        "description": "responsible",
+                        "name": "responsible",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateProductRequest"
+                            "$ref": "#/definitions/models.CreateUpdateResponsibleRequest"
                         }
                     }
                 ],
@@ -111,9 +111,9 @@ var doc = `{
                 }
             }
         },
-        "/v1/product/{product_id}": {
+        "/v1/responsible/{responsible_id}": {
             "get": {
-                "description": "API for getting a product",
+                "description": "API for getting a responsible",
                 "consumes": [
                     "application/json"
                 ],
@@ -121,14 +121,14 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "product"
+                    "responsible"
                 ],
-                "summary": "Get Product",
+                "summary": "Get responsible",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "product_id",
-                        "name": "product_id",
+                        "description": "responsible_id",
+                        "name": "responsible_id",
                         "in": "path",
                         "required": true
                     }
@@ -137,7 +137,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetProductResponse"
+                            "$ref": "#/definitions/models.GetResponsibleResponse"
                         }
                     },
                     "400": {
@@ -155,7 +155,7 @@ var doc = `{
                 }
             },
             "put": {
-                "description": "API for creating product",
+                "description": "API for creating responsible",
                 "consumes": [
                     "application/json"
                 ],
@@ -163,24 +163,24 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "product"
+                    "responsible"
                 ],
-                "summary": "Update product",
+                "summary": "Update responsible",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "product_id",
-                        "name": "product_id",
+                        "description": "responsible_id",
+                        "name": "responsible_id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "product",
-                        "name": "Product",
+                        "description": "responsible",
+                        "name": "responsible",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateProductRequest"
+                            "$ref": "#/definitions/models.CreateUpdateResponsibleRequest"
                         }
                     }
                 ],
@@ -219,26 +219,6 @@ var doc = `{
                 }
             }
         },
-        "models.CreateProductRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "photos": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Photos"
-                    }
-                },
-                "price": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.CreateResponse": {
             "type": "object",
             "properties": {
@@ -247,25 +227,48 @@ var doc = `{
                 }
             }
         },
-        "models.GetAllProductsResponse": {
+        "models.CreateUpdateResponsibleRequest": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "name_of_step": {
+                    "type": "string"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.GetAllResponsiblesResponse": {
             "type": "object",
             "properties": {
                 "count": {
                     "type": "integer"
                 },
-                "products": {
+                "responsibles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Product"
+                        "$ref": "#/definitions/models.Responsible"
                     }
                 }
             }
         },
-        "models.GetProductResponse": {
+        "models.GetResponsibleResponse": {
             "type": "object",
             "properties": {
-                "product": {
-                    "$ref": "#/definitions/models.Product"
+                "responsible": {
+                    "$ref": "#/definitions/models.Responsible"
                 }
             }
         },
@@ -280,37 +283,29 @@ var doc = `{
                 }
             }
         },
-        "models.Photos": {
+        "models.Responsible": {
             "type": "object",
             "properties": {
-                "id": {
+                "comment": {
                     "type": "string"
-                }
-            }
-        },
-        "models.Product": {
-            "type": "object",
-            "properties": {
+                },
                 "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "photos": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Photos"
-                    }
-                },
-                "price": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "id": {
                     "type": "string"
+                },
+                "name_of_step": {
+                    "type": "string"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
                 }
             }
         }

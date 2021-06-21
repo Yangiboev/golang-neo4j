@@ -6,37 +6,39 @@ definitions:
       message:
         type: string
     type: object
-  models.CreateProductRequest:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      photos:
-        items:
-          $ref: '#/definitions/models.Photos'
-        type: array
-      price:
-        type: integer
-    type: object
   models.CreateResponse:
     properties:
       id:
         type: string
     type: object
-  models.GetAllProductsResponse:
+  models.CreateUpdateResponsibleRequest:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: integer
+      name_of_step:
+        type: string
+      organization:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: integer
+    type: object
+  models.GetAllResponsiblesResponse:
     properties:
       count:
         type: integer
-      products:
+      responsibles:
         items:
-          $ref: '#/definitions/models.Product'
+          $ref: '#/definitions/models.Responsible'
         type: array
     type: object
-  models.GetProductResponse:
+  models.GetResponsibleResponse:
     properties:
-      product:
-        $ref: '#/definitions/models.Product'
+      responsible:
+        $ref: '#/definitions/models.Responsible'
     type: object
   models.InternalServerError:
     properties:
@@ -45,36 +47,31 @@ definitions:
       message:
         type: string
     type: object
-  models.Photos:
+  models.Responsible:
     properties:
-      id:
+      comment:
         type: string
-    type: object
-  models.Product:
-    properties:
       created_at:
-        type: string
+        type: integer
       id:
         type: string
-      name:
+      name_of_step:
         type: string
-      photos:
-        items:
-          $ref: '#/definitions/models.Photos'
-        type: array
-      price:
-        type: integer
+      organization:
+        type: string
+      role:
+        type: string
       updated_at:
-        type: string
+        type: integer
     type: object
 info:
   contact: {}
 paths:
-  /v1/product:
+  /v1/responsible:
     get:
       consumes:
       - application/json
-      description: API for getting all Products
+      description: API for getting all responsibles
       parameters:
       - description: name
         in: path
@@ -86,7 +83,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetAllProductsResponse'
+            $ref: '#/definitions/models.GetAllResponsiblesResponse'
         "400":
           description: Bad Request
           schema:
@@ -95,20 +92,20 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.InternalServerError'
-      summary: Get All Products
+      summary: Get All responsibles
       tags:
-      - product
+      - responsible
     post:
       consumes:
       - application/json
-      description: API for creating product
+      description: API for creating responsible
       parameters:
-      - description: product
+      - description: responsible
         in: body
-        name: Product
+        name: responsible
         required: true
         schema:
-          $ref: '#/definitions/models.CreateProductRequest'
+          $ref: '#/definitions/models.CreateUpdateResponsibleRequest'
       produces:
       - application/json
       responses:
@@ -124,18 +121,18 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.InternalServerError'
-      summary: Create product
+      summary: Create responsible
       tags:
-      - product
-  /v1/product/{product_id}:
+      - responsible
+  /v1/responsible/{responsible_id}:
     get:
       consumes:
       - application/json
-      description: API for getting a product
+      description: API for getting a responsible
       parameters:
-      - description: product_id
+      - description: responsible_id
         in: path
-        name: product_id
+        name: responsible_id
         required: true
         type: string
       produces:
@@ -144,7 +141,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetProductResponse'
+            $ref: '#/definitions/models.GetResponsibleResponse'
         "400":
           description: Bad Request
           schema:
@@ -153,25 +150,25 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.InternalServerError'
-      summary: Get Product
+      summary: Get responsible
       tags:
-      - product
+      - responsible
     put:
       consumes:
       - application/json
-      description: API for creating product
+      description: API for creating responsible
       parameters:
-      - description: product_id
+      - description: responsible_id
         in: path
-        name: product_id
+        name: responsible_id
         required: true
         type: string
-      - description: product
+      - description: responsible
         in: body
-        name: Product
+        name: responsible
         required: true
         schema:
-          $ref: '#/definitions/models.CreateProductRequest'
+          $ref: '#/definitions/models.CreateUpdateResponsibleRequest'
       produces:
       - application/json
       responses:
@@ -187,7 +184,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.InternalServerError'
-      summary: Update product
+      summary: Update responsible
       tags:
-      - product
+      - responsible
 swagger: "2.0"

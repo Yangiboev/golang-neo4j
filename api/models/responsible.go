@@ -1,25 +1,26 @@
 package models
 
-import "time"
-
 type Photos struct {
 	ID string `json:"id"`
 }
 
 type Responsible struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Price     int64     `json:"price"`
-	Photos    []*Photos `json:"photos"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID           string `json:"id"`
+	NameOfStep   string `json:"name_of_step"`
+	Organization string `json:"organization"`
+	Role         string `json:"role"`
+	Comment      string `json:"comment"`
+	CreatedAt    int32  `json:"created_at"`
+	UpdatedAt    int32  `json:"updated_at"`
 }
 
-type CreateResponsibleRequest struct {
-	ID     string    `json:"id"`
-	Name   string    `json:"name"`
-	Price  int64     `json:"price"`
-	Photos []*Photos `json:"photos"`
+type CreateUpdateResponsibleRequest struct {
+	NameOfStep   string `json:"name_of_step"`
+	Organization string `json:"organization"`
+	Role         string `json:"role"`
+	Comment      string `json:"comment"`
+	CreatedAt    int32  `json:"created_at"`
+	UpdatedAt    int32  `json:"updated_at"`
 }
 
 type GetResponsibleResponse struct {
@@ -27,8 +28,8 @@ type GetResponsibleResponse struct {
 }
 type GetAllResponsiblesRequest struct {
 	Name  string `json:"name"`
-	Page  int64  `json:"page"`
-	Limit int64  `json:"limit"`
+	Page  int32  `json:"page"`
+	Limit int32  `json:"limit"`
 }
 type GetAllResponsiblesResponse struct {
 	Responsibles []*Responsible `json:"responsibles"`

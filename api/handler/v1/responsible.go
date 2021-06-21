@@ -47,7 +47,7 @@ func (h *handlerV1) GetResponsible(c *gin.Context) {
 //@Tags responsible
 //@Accept json
 //@Produce json
-//@Param responsible body models.CreateresponsibleRequest  true "responsible"
+//@Param responsible body models.CreateUpdateResponsibleRequest  true "responsible"
 // @Success 200 {object} models.CreateResponse
 // @Failure 400 {object} models.BadRequestError
 // @Failure 500 {object} models.InternalServerError
@@ -106,7 +106,7 @@ func (h *handlerV1) GetAllResponsibles(c *gin.Context) {
 		HandleBadRequest(c, err, "Error while parsing page")
 		return
 	}
-	responsibles, count, err := h.storage.Responsible().GetAll(page, limit, c.Query("name"))
+	responsibles, count, err := h.storage.Responsible().GetAll(int32(page), int32(limit), c.Query("name"))
 
 	if err != nil {
 		HandleBadRequest(c, err, "Error while getting all responsibles")
@@ -129,7 +129,7 @@ func (h *handlerV1) GetAllResponsibles(c *gin.Context) {
 //@Accept json
 //@Produce json
 // @Param responsible_id path string true "responsible_id"
-//@Param responsible body models.CreateresponsibleRequest  true "responsible"
+//@Param responsible body models.CreateUpdateResponsibleRequest  true "responsible"
 // @Success 200 {object} models.CreateResponse
 // @Failure 400 {object} models.BadRequestError
 // @Failure 500 {object} models.InternalServerError

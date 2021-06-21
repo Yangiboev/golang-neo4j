@@ -40,7 +40,7 @@ func Load() Config {
 	cfg.Neo4jUser = cast.ToString(getOrReturnDefaultValue("NEO4J_USER", "neo4j"))
 	cfg.Neo4jPassword = cast.ToString(getOrReturnDefaultValue("NEO4J_PASSWORD", "admin"))
 	cfg.LogLevel = cast.ToString(getOrReturnDefaultValue("LOG_LEVEL", "debug"))
-	cfg.Port = cast.ToString(getOrReturnDefaultValue("PORT", ":8080"))
+	cfg.Port = cast.ToString(getOrReturnDefaultValue("PORT", ":8000"))
 
 	return cfg
 
