@@ -1,6 +1,8 @@
 package neo4j
 
 import (
+	"fmt"
+
 	"github.com/Yangiboev/golang-neo4j/api/models"
 	"github.com/Yangiboev/golang-neo4j/storage/repo"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -54,6 +56,103 @@ func (pr *responsibleRepo) Create(responsible *models.Responsible) (*models.Crea
 		return nil, err
 	}
 	return result.(*models.CreateResponse), nil
+}
+
+func (pr *responsibleRepo) Get(id string) (*models.Responsible, error) {
+	session := pr.driver.NewSession(neo4j.SessionConfig{
+		AccessMode: neo4j.AccessModeRead,
+	})
+	defer session.Close()
+	responsible, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
+		result, err := tx.Run(
+			`MATCH (r:Responsible {id:$id}) return 
+			r.id,
+			r.name_of_step,
+			r.organization,
+			r.role,
+			r.comment,
+			r.created_at,
+			r.updated_at
+			`, map[string]interface{}{
+				"id": id,
+			})
+		if err != nil {
+			return nil, err
+		}
+		record, err := result.Single()
+		// var (
+		// 	ID, _           = record.Get("r.id")
+		// 	nameOfStep, _   = record.Get("r.name_of_step")
+		// 	organization, _ = record.Get("r.organization")
+		// 	role, _         = record.Get("r.role")
+		// 	comment, _      = record.Get("r.comment")
+		// 	createdAt, _    = record.Get("r.created_at")
+		// 	updatedAt, _    = record.Get("r.updated_at")
+		// )
+		if err != nil {
+			return nil, err
+		}
+		return scan(record), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return responsible.(*models.Responsible), nil
+}
+
+func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Responsible, int64, error) {
+
+	session := pr.driver.NewSession(neo4j.SessionConfig{
+		AccessMode: neo4j.AccessModeRead,
+	})
+	fmt.Println("ssssssssssss")
+
+	defer session.Close()
+	res, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
+		var results []*models.Responsible
+		fmt.Println(page)
+		fmt.Println(limit)
+		responsibles, err := tx.Run(
+			`MATCH (r:Responsible) RETURN 
+			r.id,
+			r.name_of_step,
+			r.organization,
+			r.role,
+			r.comment,
+			r.created_at,
+			r.updated_at
+			ORDER BY r.created_at
+			SKIP $skip
+			LIMIT $limit
+			`, map[string]interface{}{
+				"skip":  page * limit,
+				"limit": limit,
+			})
+		fmt.Println((page - 1) * limit)
+		if err != nil {
+			return nil, err
+		}
+		for responsibles.Next() {
+			var (
+				record = responsibles.Record()
+				// ID, _           = record.Get("r.id")
+				// nameOfStep, _   = record.Get("r.name_of_step")
+				// organization, _ = record.Get("r.organization")
+				// role, _         = record.Get("r.role")
+				// comment, _      = record.Get("r.comment")
+				// createdAt, _    = record.Get("r.created_at")
+				// updatedAt, _    = record.Get("r.updated_at")
+			)
+
+			results = append(results, scan(record))
+		}
+		return results, nil
+	})
+	if err != nil {
+		return nil, 0, err
+	}
+	return res.([]*models.Responsible), 0, nil
 }
 
 func scan(record *neo4j.Record) *models.Responsible {
