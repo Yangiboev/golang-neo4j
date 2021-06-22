@@ -46,13 +46,12 @@ func (ps *responsibleService) Get(ctx context.Context, req *models.GetRequest) (
 }
 func (ps *responsibleService) GetAll(ctx context.Context, req *models.GetAllResponsiblesRequest) (*models.GetAllResponsiblesResponse, error) {
 
-	response, count, err := ps.storage.Responsible().GetAll(req.Page, req.Limit, req.Name)
-
+	response, _, err := ps.storage.Responsible().GetAll(req.Page, req.Limit, req.Name)
 	if err != nil {
 		return nil, helper.HandleError(ps.logger, err, "error while getting responsible", req)
 	}
 	return &models.GetAllResponsiblesResponse{
-		Count:        count,
+		Count:        len(response),
 		Responsibles: response,
 	}, nil
 }

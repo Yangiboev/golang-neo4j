@@ -56,50 +56,25 @@ func (pr *responsibleRepo) Create(responsible *models.Responsible) (*models.Crea
 	return result.(*models.CreateResponse), nil
 }
 
-func (pr *responsibleRepo) Get(id string) (*models.Responsible, error) {
+func scan(record *neo4j.Record) *models.Responsible {
 	var (
-		responsible models.Responsible
+		ID, _           = record.Get("r.id")
+		nameOfStep, _   = record.Get("r.name_of_step")
+		organization, _ = record.Get("r.organization")
+		role, _         = record.Get("r.role")
+		comment, _      = record.Get("r.comment")
+		createdAt, _    = record.Get("r.created_at")
+		updatedAt, _    = record.Get("r.updated_at")
 	)
-	session := pr.driver.NewSession(neo4j.SessionConfig{
-		AccessMode: neo4j.AccessModeRead,
-	})
-	query := `MATCH (r:Responsible {id: $id}) return r`
-	defer session.Close()
-	_, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
-		get, err := tx.Run(
-			query, map[string]interface{}{
-				"id": id,
-			})
-
-		if err != nil {
-			return nil, err
-		}
-
-		singleRecord, err := get.Single()
-		if err != nil {
-			return nil, err
-		}
-		return &models.Responsible{
-			ID:           singleRecord.Values[0].(string),
-			NameOfStep:   singleRecord.Values[1].(string),
-			Organization: singleRecord.Values[2].(string),
-			Role:         singleRecord.Values[3].(string),
-			Comment:      singleRecord.Values[4].(string),
-			CreatedAt:    singleRecord.Values[5].(int32),
-			UpdatedAt:    singleRecord.Values[6].(int32),
-		}, nil
-	})
-
-	if err != nil {
-		return nil, err
+	return &models.Responsible{
+		ID:           ID.(string),
+		NameOfStep:   nameOfStep.(string),
+		Organization: organization.(string),
+		Role:         role.(string),
+		Comment:      comment.(string),
+		CreatedAt:    createdAt.(int64),
+		UpdatedAt:    updatedAt.(int64),
 	}
-
-	return &responsible, nil
-}
-
-func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Responsible, int64, error) {
-
-	return nil, 0, nil
 }
 
 func (pr *responsibleRepo) Update(responsible *models.Responsible) error {
