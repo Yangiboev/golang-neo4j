@@ -90,7 +90,7 @@ func (pr *responsibleRepo) Get(id string) (*models.Responsible, error) {
 		if err != nil {
 			return nil, err
 		}
-		return scan(record), nil
+		return scanResponsible(record), nil
 	})
 	if err != nil {
 		return nil, err
@@ -139,7 +139,7 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 				// updatedAt, _    = record.Get("r.updated_at")
 			)
 
-			results = append(results, scan(record))
+			results = append(results, scanResponsible(record))
 		}
 		return results, nil
 	})
@@ -148,7 +148,8 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 	}
 	return res.([]*models.Responsible), 0, nil
 }
-func scan(record *neo4j.Record) *models.Responsible {
+
+func scanResponsible(record *neo4j.Record) *models.Responsible {
 	var (
 		ID, _           = record.Get("r.id")
 		nameOfStep, _   = record.Get("r.name_of_step")
@@ -167,4 +168,64 @@ func scan(record *neo4j.Record) *models.Responsible {
 		CreatedAt:    createdAt.(int64),
 		UpdatedAt:    updatedAt.(int64),
 	}
+}
+
+func (pr *responsibleRepo) Update(responsible *models.Responsible) error {
+	query := `MATCH (r:Responsible {id:$id}) SET
+		r.name_of_step=$name_of_step,
+		r.organization=$organization,
+		r.role=$role,
+		r.comment=$comment,
+		r.updated_at=$updated_at`
+	session := pr.driver.NewSession(neo4j.SessionConfig{
+		AccessMode: neo4j.AccessModeWrite,
+	})
+	defer session.Close()
+	_, err := session.WriteTransaction(func(tx neo4j.Transaction) (interface{}, error) {
+		_, err := tx.Run(query, map[string]interface{}{
+			"id":           responsible.ID,
+			"name_of_step": responsible.NameOfStep,
+			"organization": responsible.Organization,
+			"role":         responsible.Role,
+			"comment":      responsible.Comment,
+			"updated_at":   responsible.UpdatedAt,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, nil
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (pr *responsibleRepo) Delete(id string) error {
+	session := pr.driver.NewSession(neo4j.SessionConfig{
+		AccessMode: neo4j.AccessModeWrite,
+	})
+	defer session.Close()
+	_, err := session.WriteTransaction(func(tx neo4j.Transaction) (interface{}, error) {
+		_, err := tx.Run(`MATCH (r:Responsible {
+			id: $id
+			}) DELETE r`, map[string]interface{}{
+			"id": id,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

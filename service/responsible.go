@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Yangiboev/golang-neo4j/api/models"
 	"github.com/Yangiboev/golang-neo4j/pkg/helper"
@@ -53,4 +54,24 @@ func (ps *responsibleService) GetAll(ctx context.Context, req *models.GetAllResp
 		Count:        len(response),
 		Responsibles: response,
 	}, nil
+}
+
+func (ps *responsibleService) Update(ctx context.Context, req *models.Responsible) error {
+	err := ps.storage.Responsible().Update(req)
+	if err != nil {
+		return helper.HandleError(ps.logger, err, "error while updating responsible", nil)
+	}
+
+	return nil
+}
+
+func (ps *responsibleService) Delete(ctx context.Context, req *models.DeleteRequest) error {
+	fmt.Println("Erererereerrers")
+	err := ps.storage.Responsible().Delete(req.ID)
+
+	if err != nil {
+		return helper.HandleError(ps.logger, err, "error while deleting responsible", nil)
+	}
+
+	return nil
 }

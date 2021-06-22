@@ -33,6 +33,14 @@ func New(ro RouterOptions) *gin.Engine {
 	router.GET("/v1/responsible/:responsible_id", handlerV1.GetResponsible)
 	router.POST("/v1/responsible", handlerV1.CreateResponsible)
 	router.PUT("/v1/responsible/:responsible_id", handlerV1.UpdateResponsible)
+	router.DELETE("/v1/responsible/:responsible_id", handlerV1.DeleteResponsible)
+
+	// Action endpoints
+	router.GET("/v1/action", handlerV1.GetAllActions)
+	router.GET("/v1/action/:action_id", handlerV1.GetAction)
+	router.POST("/v1/action", handlerV1.CreateAction)
+	router.PUT("/v1/action/:action_id", handlerV1.UpdateAction)
+	router.DELETE("/v1/action/:action_id", handlerV1.DeleteAction)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

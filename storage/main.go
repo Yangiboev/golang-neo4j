@@ -8,18 +8,25 @@ import (
 
 type StorageI interface {
 	Responsible() repo.ResponsibleStorageI
+	Action() repo.ActionI
 }
 
 type responsible struct {
 	responsibleRepo repo.ResponsibleStorageI
+	actionRepo      repo.ActionI
 }
 
 func NewResponsibleStorage(driver neo4j.Driver) StorageI {
 	return &responsible{
 		responsibleRepo: neo.NewResponsibleRepo(driver),
+		actionRepo:      neo.NewActionRepo(driver),
 	}
 }
 
 func (pr responsible) Responsible() repo.ResponsibleStorageI {
 	return pr.responsibleRepo
+}
+
+func (pr responsible) Action() repo.ActionI {
+	return pr.actionRepo
 }
