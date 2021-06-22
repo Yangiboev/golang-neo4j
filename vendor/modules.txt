@@ -8,6 +8,12 @@ github.com/PuerkitoBio/urlesc
 ## explicit
 github.com/alecthomas/template
 github.com/alecthomas/template/parse
+# github.com/bxcodec/faker/v3 v3.6.0
+## explicit
+github.com/bxcodec/faker/v3
+github.com/bxcodec/faker/v3/support/slice
+# github.com/davecgh/go-spew v1.1.1
+github.com/davecgh/go-spew/spew
 # github.com/gin-contrib/sse v0.1.0
 github.com/gin-contrib/sse
 # github.com/gin-gonic/gin v1.7.2
@@ -67,9 +73,14 @@ github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/pool
 github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/retry
 github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/router
 github.com/neo4j/neo4j-go-driver/v4/neo4j/log
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
 # github.com/spf13/cast v1.3.1
 ## explicit
 github.com/spf13/cast
+# github.com/stretchr/testify v1.7.0
+## explicit
+github.com/stretchr/testify/assert
 # github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 ## explicit
 github.com/swaggo/files
@@ -154,3 +165,5 @@ google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/yaml.v2 v2.4.0
 gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+gopkg.in/yaml.v3
