@@ -92,7 +92,7 @@ func (pr *responsibleRepo) Get(id string) (*models.Responsible, error) {
 		if err != nil {
 			return nil, err
 		}
-		return scan(record), nil
+		return scanResponsible(record), nil
 	})
 	if err != nil {
 		return nil, err
@@ -145,7 +145,7 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 				// updatedAt, _    = record.Get("r.updated_at")
 			)
 
-			results = append(results, scan(record))
+			results = append(results, scanResponsible(record))
 		}
 		return results, nil
 	})
@@ -155,7 +155,7 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 	return res.([]*models.Responsible), 0, nil
 }
 
-func scan(record *neo4j.Record) *models.Responsible {
+func scanResponsible(record *neo4j.Record) *models.Responsible {
 	var (
 		ID, _           = record.Get("r.id")
 		nameOfStep, _   = record.Get("r.name_of_step")

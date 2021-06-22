@@ -1,9 +1,37 @@
 definitions:
+  models.Action:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: integer
+      id:
+        type: string
+      role:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
   models.BadRequestError:
     properties:
       code:
         type: string
       message:
+        type: string
+    type: object
+  models.CreateActionRequest:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: integer
+      role:
+        type: string
+      status:
+        type: string
+      type:
         type: string
     type: object
   models.CreateResponse:
@@ -24,6 +52,15 @@ definitions:
       role:
         type: string
       updated_at:
+        type: integer
+    type: object
+  models.GetAllActionsResponse:
+    properties:
+      action:
+        items:
+          $ref: '#/definitions/models.Action'
+        type: array
+      count:
         type: integer
     type: object
   models.GetAllResponsiblesResponse:
@@ -70,6 +107,19 @@ definitions:
         example: true
         type: boolean
     type: object
+  models.UpdateActionRequest:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: integer
+      role:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
   models.UpdateResponsibleRequest:
     properties:
       comment:
@@ -86,6 +136,149 @@ definitions:
 info:
   contact: {}
 paths:
+  /v1/action:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all actions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllActionsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Get All actions
+      tags:
+      - action
+    post:
+      consumes:
+      - application/json
+      description: API for creating action
+      parameters:
+      - description: action
+        in: body
+        name: action
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateActionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Create action
+      tags:
+      - action
+  /v1/action/{action_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting action
+      parameters:
+      - description: action_id
+        in: path
+        name: action_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Delete action
+      tags:
+      - action
+    get:
+      consumes:
+      - application/json
+      description: API for getting a action
+      parameters:
+      - description: action_id
+        in: path
+        name: action_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Action'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Get action
+      tags:
+      - action
+    put:
+      consumes:
+      - application/json
+      description: API for creating action
+      parameters:
+      - description: action_id
+        in: path
+        name: action_id
+        required: true
+        type: string
+      - description: action
+        in: body
+        name: action
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateActionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Update action
+      tags:
+      - action
   /v1/responsible:
     get:
       consumes:
