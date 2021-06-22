@@ -33,11 +33,7 @@ func (h *handlerV1) GetResponsible(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK,
-		gin.H{
-			"success": true,
-			"data":    responsible,
-		})
+	c.JSON(http.StatusOK, responsible)
 
 }
 
@@ -106,7 +102,7 @@ func (h *handlerV1) GetAllResponsibles(c *gin.Context) {
 		HandleBadRequest(c, err, "Error while parsing page")
 		return
 	}
-	responsibles, count, err := h.storage.Responsible().GetAll(int32(page), int32(limit), c.Query("name"))
+	responsibles, _, err := h.storage.Responsible().GetAll(int32(page), int32(limit), c.Query("name"))
 
 	if err != nil {
 		HandleBadRequest(c, err, "Error while getting all responsibles")
@@ -116,7 +112,7 @@ func (h *handlerV1) GetAllResponsibles(c *gin.Context) {
 	c.JSON(http.StatusOK,
 		gin.H{
 			"success": true,
-			"count":   count,
+			"count":   len(responsibles),
 			"data":    responsibles,
 		})
 

@@ -10,8 +10,8 @@ type Responsible struct {
 	Organization string `json:"organization"`
 	Role         string `json:"role"`
 	Comment      string `json:"comment"`
-	CreatedAt    int32  `json:"created_at"`
-	UpdatedAt    int32  `json:"updated_at"`
+	CreatedAt    int64  `json:"created_at"`
+	UpdatedAt    int64  `json:"updated_at"`
 }
 
 type CreateUpdateResponsibleRequest struct {
@@ -19,8 +19,8 @@ type CreateUpdateResponsibleRequest struct {
 	Organization string `json:"organization"`
 	Role         string `json:"role"`
 	Comment      string `json:"comment"`
-	CreatedAt    int32  `json:"created_at"`
-	UpdatedAt    int32  `json:"updated_at"`
+	CreatedAt    int64  `json:"created_at"`
+	UpdatedAt    int64  `json:"updated_at"`
 }
 
 type GetResponsibleResponse struct {
@@ -33,5 +33,5 @@ type GetAllResponsiblesRequest struct {
 }
 type GetAllResponsiblesResponse struct {
 	Responsibles []*Responsible `json:"responsibles"`
-	Count        int64          `json:"count"`
+	Count        int            `json:"count"`
 }
