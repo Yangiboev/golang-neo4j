@@ -129,7 +129,7 @@ func (h *handlerV1) GetAllResponsibles(c *gin.Context) {
 //@Accept json
 //@Produce json
 // @Param responsible_id path string true "responsible_id"
-//@Param responsible body models.CreateUpdateResponsibleRequest  true "responsible"
+//@Param responsible body models.UpdateResponsibleRequest  true "responsible"
 // @Success 200 {object} models.CreateResponse
 // @Failure 400 {object} models.BadRequestError
 // @Failure 500 {object} models.InternalServerError
@@ -151,7 +151,7 @@ func (h *handlerV1) UpdateResponsible(c *gin.Context) {
 		return
 	}
 	responsible.ID = responsibleID
-	// resp, err := h.storage.Responsible().Update(&responsible)
+	err = h.storage.Responsible().Update(&responsible)
 
 	if err != nil {
 		HandleBadRequest(c, err, "Error while updating responsible")
@@ -161,6 +161,37 @@ func (h *handlerV1) UpdateResponsible(c *gin.Context) {
 	c.JSON(http.StatusCreated,
 		gin.H{
 			"success": true,
-			// "data":    resp,
+		})
+}
+
+// @Router /v1/responsible/{responsible_id} [delete]
+// @Summary Delete Responsible
+// @Description API for deleting responsible
+// @Tags responsible
+// @Accept json
+// @Produce json
+// @Param responsible_id path string  true "responsible_id"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.BadRequestError
+// @Failure 500 {object} models.InternalServerError
+func (h *handlerV1) DeleteResponsible(c *gin.Context) {
+	responsibleId := c.Param("responsible_id")
+
+	_, err := uuid.Parse(responsibleId)
+	if err != nil {
+		HandleBadRequest(c, err, "Error while parsing uuid")
+		return
+	}
+
+	err = h.storage.Responsible().Delete(responsibleId)
+
+	if err != nil {
+		HandleBadRequest(c, err, "Error while deleting responsible")
+		return
+	}
+
+	c.JSON(http.StatusOK,
+		gin.H{
+			"success": true,
 		})
 }

@@ -12,6 +12,10 @@ type DeleteRequest struct {
 	ID string `json:"id"`
 }
 
+type SuccessResponse struct {
+	Success bool `json:"success" example:"true"`
+}
+
 //InternalServerError ...
 type InternalServerError struct {
 	Code    string

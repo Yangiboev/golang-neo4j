@@ -23,6 +23,14 @@ type CreateUpdateResponsibleRequest struct {
 	UpdatedAt    int32  `json:"updated_at"`
 }
 
+type UpdateResponsibleRequest struct {
+	NameOfStep   string `json:"name_of_step"`
+	Organization string `json:"organization"`
+	Role         string `json:"role"`
+	Comment      string `json:"comment"`
+	UpdatedAt    int32  `json:"updated_at"`
+}
+
 type GetResponsibleResponse struct {
 	Responsible *Responsible `json:"responsible"`
 }

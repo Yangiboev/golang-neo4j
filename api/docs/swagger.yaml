@@ -64,6 +64,25 @@ definitions:
       updated_at:
         type: integer
     type: object
+  models.SuccessResponse:
+    properties:
+      success:
+        example: true
+        type: boolean
+    type: object
+  models.UpdateResponsibleRequest:
+    properties:
+      comment:
+        type: string
+      name_of_step:
+        type: string
+      organization:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -125,6 +144,34 @@ paths:
       tags:
       - responsible
   /v1/responsible/{responsible_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting responsible
+      parameters:
+      - description: responsible_id
+        in: path
+        name: responsible_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Delete Responsible
+      tags:
+      - responsible
     get:
       consumes:
       - application/json
@@ -168,7 +215,7 @@ paths:
         name: responsible
         required: true
         schema:
-          $ref: '#/definitions/models.CreateUpdateResponsibleRequest'
+          $ref: '#/definitions/models.UpdateResponsibleRequest'
       produces:
       - application/json
       responses:
