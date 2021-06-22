@@ -1,8 +1,6 @@
 package neo4j
 
 import (
-	"fmt"
-
 	"github.com/Yangiboev/golang-neo4j/api/models"
 	"github.com/Yangiboev/golang-neo4j/storage/repo"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -106,13 +104,10 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 	session := pr.driver.NewSession(neo4j.SessionConfig{
 		AccessMode: neo4j.AccessModeRead,
 	})
-	fmt.Println("ssssssssssss")
 
 	defer session.Close()
 	res, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
 		var results []*models.Responsible
-		fmt.Println(page)
-		fmt.Println(limit)
 		responsibles, err := tx.Run(
 			`MATCH (r:Responsible) RETURN 
 			r.id,
@@ -129,7 +124,6 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 				"skip":  page * limit,
 				"limit": limit,
 			})
-		fmt.Println((page - 1) * limit)
 		if err != nil {
 			return nil, err
 		}

@@ -12,7 +12,6 @@ import (
 )
 
 var (
-	err  error
 	log  logger.Logger
 	cfg  config.Config
 	strg storage.StorageI

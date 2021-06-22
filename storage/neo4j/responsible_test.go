@@ -39,3 +39,10 @@ func TestGetResponsible(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, created, response)
 }
+func TestGetAllResponsible(t *testing.T) {
+	_ = createResponsible(t)
+	response, count, err := strg.Responsible().GetAll(1, 20, "")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, response)
+	assert.True(t, count > 0)
+}
