@@ -1,6 +1,8 @@
 package neo4j
 
 import (
+	"fmt"
+
 	"github.com/Yangiboev/golang-neo4j/api/models"
 	"github.com/Yangiboev/golang-neo4j/storage/repo"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -78,15 +80,6 @@ func (pr *responsibleRepo) Get(id string) (*models.Responsible, error) {
 			return nil, err
 		}
 		record, err := result.Single()
-		// var (
-		// 	ID, _           = record.Get("r.id")
-		// 	nameOfStep, _   = record.Get("r.name_of_step")
-		// 	organization, _ = record.Get("r.organization")
-		// 	role, _         = record.Get("r.role")
-		// 	comment, _      = record.Get("r.comment")
-		// 	createdAt, _    = record.Get("r.created_at")
-		// 	updatedAt, _    = record.Get("r.updated_at")
-		// )
 		if err != nil {
 			return nil, err
 		}
@@ -100,43 +93,52 @@ func (pr *responsibleRepo) Get(id string) (*models.Responsible, error) {
 }
 
 func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Responsible, int64, error) {
-
-	session := pr.driver.NewSession(neo4j.SessionConfig{
-		AccessMode: neo4j.AccessModeRead,
-	})
+	var (
+		count int64
+		query = `MATCH (r:Responsible) RETURN 
+		r.id,
+		r.name_of_step,
+		r.organization,
+		r.role,
+		r.comment,
+		r.created_at,
+		r.updated_at
+		ORDER BY r.created_at
+		SKIP $skip
+		LIMIT $limit`
+		countQuery = `MATCH (a:Responsible) RETURN count(a) as count`
+		session    = pr.driver.NewSession(neo4j.SessionConfig{
+			AccessMode: neo4j.AccessModeRead,
+		})
+	)
 
 	defer session.Close()
 	res, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
 		var results []*models.Responsible
-		responsibles, err := tx.Run(
-			`MATCH (r:Responsible) RETURN 
-			r.id,
-			r.name_of_step,
-			r.organization,
-			r.role,
-			r.comment,
-			r.created_at,
-			r.updated_at
-			ORDER BY r.created_at
-			SKIP $skip
-			LIMIT $limit
-			`, map[string]interface{}{
-				"skip":  page * limit,
-				"limit": limit,
-			})
+		result, err := tx.Run(
+			countQuery, map[string]interface{}{})
+		if err != nil {
+			return nil, err
+		}
+		record, err := result.Single()
+		if err != nil {
+			return nil, err
+		}
+
+		fmt.Println(record.Keys)
+		countRes, _ := record.Get("count")
+		count = countRes.(int64)
+
+		responsibles, err := tx.Run(query, map[string]interface{}{
+			"skip":  page * limit,
+			"limit": limit,
+		})
 		if err != nil {
 			return nil, err
 		}
 		for responsibles.Next() {
 			var (
 				record = responsibles.Record()
-				// ID, _           = record.Get("r.id")
-				// nameOfStep, _   = record.Get("r.name_of_step")
-				// organization, _ = record.Get("r.organization")
-				// role, _         = record.Get("r.role")
-				// comment, _      = record.Get("r.comment")
-				// createdAt, _    = record.Get("r.created_at")
-				// updatedAt, _    = record.Get("r.updated_at")
 			)
 
 			results = append(results, scanResponsible(record))
@@ -146,7 +148,7 @@ func (pr *responsibleRepo) GetAll(page, limit int32, name string) ([]*models.Res
 	if err != nil {
 		return nil, 0, err
 	}
-	return res.([]*models.Responsible), 0, nil
+	return res.([]*models.Responsible), count, nil
 }
 
 func scanResponsible(record *neo4j.Record) *models.Responsible {

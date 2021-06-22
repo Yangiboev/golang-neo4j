@@ -1,6 +1,8 @@
 package neo4j
 
 import (
+	"fmt"
+
 	"github.com/Yangiboev/golang-neo4j/api/models"
 	"github.com/Yangiboev/golang-neo4j/storage/repo"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -97,7 +99,9 @@ func (ar *actionRepo) Get(id string) (*models.Action, error) {
 }
 
 func (ar *actionRepo) GetAll(page, limit int32) ([]*models.Action, int64, error) {
-	query := `
+	var (
+		count int64
+		query = `
 		MATCH (a:Action) RETURN
 		a.id,
 		a.type,
@@ -106,17 +110,31 @@ func (ar *actionRepo) GetAll(page, limit int32) ([]*models.Action, int64, error)
 		a.role,
 		a.created_at
 		ORDER BY a.created_at
-		SKIP 1
-		LIMIT 100`
-
-	session := ar.driver.NewSession(neo4j.SessionConfig{
-		AccessMode: neo4j.AccessModeRead,
-	})
+		SKIP $skip
+		LIMIT $limit`
+		countQuery = `MATCH (a:Action) RETURN count(a) as count`
+		session    = ar.driver.NewSession(neo4j.SessionConfig{
+			AccessMode: neo4j.AccessModeRead,
+		})
+	)
 
 	res, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
 		var actions []*models.Action
+		result, err := tx.Run(
+			countQuery, map[string]interface{}{})
+		if err != nil {
+			return nil, err
+		}
+		record, err := result.Single()
+		if err != nil {
+			return nil, err
+		}
 
-		resp, err := tx.Run(
+		fmt.Println(record.Keys)
+		countRes, _ := record.Get("count")
+		count = countRes.(int64)
+
+		result, err = tx.Run(
 			query, map[string]interface{}{
 				"skip":  page * limit,
 				"limit": limit,
@@ -124,8 +142,8 @@ func (ar *actionRepo) GetAll(page, limit int32) ([]*models.Action, int64, error)
 		if err != nil {
 			return nil, err
 		}
-		for resp.Next() {
-			var record = resp.Record()
+		for result.Next() {
+			var record = result.Record()
 
 			actions = append(actions, scanAction(record))
 		}
@@ -136,8 +154,10 @@ func (ar *actionRepo) GetAll(page, limit int32) ([]*models.Action, int64, error)
 	if err != nil {
 		return nil, 0, err
 	}
-
-	return res.([]*models.Action), 0, nil
+	fmt.Println(count)
+	fmt.Println(count)
+	fmt.Println(count)
+	return res.([]*models.Action), count, nil
 }
 
 func (ar *actionRepo) Update(action *models.Action) error {

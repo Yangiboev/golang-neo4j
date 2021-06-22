@@ -101,7 +101,7 @@ func (h *handlerV1) GetAllActions(c *gin.Context) {
 		HandleBadRequest(c, err, "Error while parsing page")
 		return
 	}
-	actions, _, err := h.storage.Action().GetAll(int32(page), int32(limit))
+	actions, count, err := h.storage.Action().GetAll(int32(page), int32(limit))
 
 	if err != nil {
 		HandleBadRequest(c, err, "Error while getting all actions")
@@ -111,7 +111,7 @@ func (h *handlerV1) GetAllActions(c *gin.Context) {
 	c.JSON(http.StatusOK,
 		gin.H{
 			"success": true,
-			"count":   len(actions),
+			"count":   count,
 			"data":    actions,
 		})
 
